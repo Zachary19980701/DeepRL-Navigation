@@ -1,17 +1,24 @@
 import cv2
 import numpy as np
 
-
+#机器人类
 class RoboticAssistant:
     def __init__(self, v_range=60, w_range=90, d=5, wu=9, wv=4, car_w=9, car_f=7, car_r=10, dt=0.1):
+        #机器人的位姿:坐标和朝向->x, y, theta
         self.x = 0
         self.y = 0
         self.theta = 0
+        self.record = [] #机器人的位姿记录
+        
+        #机器人的控制参数：线速度velocity和角速度angular_velocity
         self.velocity = 0
         self.angular_velocity = 0
-        self.record = []
+        #线速度和角速度限幅
         self.v_interval = v_range
         self.w_interval = w_range
+        self.delta_time = dt #步进时间
+        
+        #机器人的几何参数描述
         self.d = d
         self.wu = wu
         self.wv = wv
@@ -19,9 +26,11 @@ class RoboticAssistant:
         self.car_f = car_f
         self.car_r = car_r
         self.corps()
-        self.delta_time = dt
+        
 
+    #update robot state，计算机器人下一步的状态
     def update(self):
+        #对机器人速度进行限幅
         if self.velocity > self.v_interval:
             self.velocity = self.v_interval
         elif self.velocity < -self.v_interval:
@@ -30,12 +39,14 @@ class RoboticAssistant:
             self.angular_velocity = self.w_interval
         elif self.angular_velocity < -self.w_interval:
             self.angular_velocity = -self.w_interval
+        #计算机器人的下一步坐标与朝向
         self.x += self.velocity * np.cos(np.deg2rad(self.theta)) * self.delta_time
         self.y += self.velocity * np.sin(np.deg2rad(self.theta)) * self.delta_time
         self.theta += self.angular_velocity * self.delta_time
-        self.theta = self.theta % 360
-        self.record.append((self.x, self.y, self.theta))
-        self.corps()
+        self.theta = self.theta % 360 #归一化
+        #记录坐标
+        self.record.append((self.x, self.y, self.theta)) 
+        self.corps()#记录机器人轮廓的坐标
 
     def redo(self):
         self.x -= self.velocity * np.cos(np.deg2rad(self.theta)) * self.delta_time
@@ -57,6 +68,7 @@ class RoboticAssistant:
             self.angular_velocity = -self.w_interval
 
     def corps(self):
+        #计算机器人轮廓的坐标
         p1 = change_direction_vis(self.car_f, self.car_w / 2, -self.theta) + np.array((self.x, self.y))
         p2 = change_direction_vis(self.car_f, -self.car_w / 2, -self.theta) + np.array((self.x, self.y))
         p3 = change_direction_vis(-self.car_r, self.car_w / 2, -self.theta) + np.array((self.x, self.y))
