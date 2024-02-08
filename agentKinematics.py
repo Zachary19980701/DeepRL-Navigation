@@ -18,7 +18,7 @@ class RoboticAssistant:
         self.w_interval = w_range
         self.delta_time = dt #步进时间
         
-        #机器人的几何参数描述
+        #机器人的几何参数描述，这里将机器人看作一个长方形，通过机器人的几何参数计算长方形的四个顶点的坐标
         self.d = d
         self.wu = wu
         self.wv = wv
@@ -56,6 +56,7 @@ class RoboticAssistant:
         self.record.pop()
 
     def control(self, v, w):
+        #机器人控制函数，就是对v,w进行限幅，然后使用update函数直接计算下一个坐标位置
         self.velocity = v
         self.angular_velocity = w
         if self.velocity > self.v_interval:
@@ -76,22 +77,25 @@ class RoboticAssistant:
         self.dimensions = (p1.astype(int), p2.astype(int), p3.astype(int), p4.astype(int))
 
     def render(self, img=np.ones((600, 600, 3))):
-        rm = 1000
-        start = 0 if len(self.record) < rm else len(self.record) - rm
+        #渲染程序，也就是将机器人轨迹和雷达等进行可视化
+        rm = 1000 #绘制的最大轨迹点数
+        start = 0 if len(self.record) < rm else len(self.record) - rm #截取绘制的部分
 
-        color = (0 / 255, 97 / 255, 255 / 255)
+        color = (0 / 255, 97 / 255, 255 / 255) #设置历史轨迹颜色
+        #使用opencv进行描点
         for i in range(start, len(self.record) - 1):
             cv2.line(img, (int(self.record[i][0]), int(self.record[i][1])),
                      (int(self.record[i + 1][0]), int(self.record[i + 1][1])), color, 1)
-
+        
+        #绘制机器人的轮廓(长方形顶点坐标)
         ed1, ed2, ed3, ed4 = self.dimensions
-        color = (0, 0, 0)
+        color = (0, 0, 0)#设置颜色
         size = 1
         cv2.line(img, tuple(ed1.astype(np.int).tolist()), tuple(ed2.astype(np.int).tolist()), color, size)
         cv2.line(img, tuple(ed1.astype(np.int).tolist()), tuple(ed3.astype(np.int).tolist()), color, size)
         cv2.line(img, tuple(ed3.astype(np.int).tolist()), tuple(ed4.astype(np.int).tolist()), color, size)
         cv2.line(img, tuple(ed2.astype(np.int).tolist()), tuple(ed4.astype(np.int).tolist()), color, size)
-
+        #朝向箭头的绘制
         arrow1 = change_direction_vis(6, 0, -self.theta) + np.array((self.x, self.y))
         arrow2 = change_direction_vis(0, 4, -self.theta) + np.array((self.x, self.y))
         arrow3 = change_direction_vis(0, -4, -self.theta) + np.array((self.x, self.y))
@@ -107,11 +111,13 @@ class RoboticAssistant:
 
 
 def change_direction_vis(x, y, angle):
+    #朝向箭头的坐标计算
     o = np.deg2rad(angle)
     return np.array((x * np.cos(o) + y * np.sin(o), -x * np.sin(o) + y * np.cos(o)))
 
 
 def view_unit(rendered_unit, x, y, u, v, angle, color=(0, 0, 0), size=1):
+    #朝向箭头边缘的计算
     edge1 = change_direction_vis(-u / 2, -v / 2, angle) + np.array((x, y))
     edge2 = change_direction_vis(u / 2, -v / 2, angle) + np.array((x, y))
     edge3 = change_direction_vis(-u / 2, v / 2, angle) + np.array((x, y))
