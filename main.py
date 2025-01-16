@@ -175,8 +175,10 @@ def visualize(agent, total_eps=2, message=False, render=False, map_path="large.p
             action = agent.choose_action(state, eval=True)
             state_next, reward, terminated = mother_nature.step(action)
             displayed = mother_nature.render(gui=render)
-            im_pil = Image.fromarray(cv2.cvtColor(np.uint8(displayed*255),cv2.COLOR_BGR2RGB))
-            images.append(im_pil)
+            
+            # 保存gif文件，此处注释掉加快运行速度
+            # im_pil = Image.fromarray(cv2.cvtColor(np.uint8(displayed*255),cv2.COLOR_BGR2RGB))
+            # images.append(im_pil)
             r_eps.append(reward)
             acc_reward += reward
             
@@ -191,10 +193,11 @@ def visualize(agent, total_eps=2, message=False, render=False, map_path="large.p
                 if message:
                     print()
                 break
-
-    print("Create GIF ...")
-    if gif_path is not None:
-        images[0].save(gif_path+gif_name, save_all=True, append_images=images[1:], optimize=True, duration=40, loop=0)
+    
+    # 保存gif文件，此处注释掉加快运行速度
+    # print("Create GIF ...")
+    # if gif_path is not None:
+        # images[0].save(gif_path+gif_name, save_all=True, append_images=images[1:], optimize=True, duration=40, loop=0)
         
 import torch
 import torch.nn as nn

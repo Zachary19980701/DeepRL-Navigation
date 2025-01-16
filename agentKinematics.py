@@ -91,10 +91,10 @@ class RoboticAssistant:
         ed1, ed2, ed3, ed4 = self.dimensions
         color = (0, 0, 0)#设置颜色
         size = 1
-        cv2.line(img, tuple(ed1.astype(np.int).tolist()), tuple(ed2.astype(np.int).tolist()), color, size)
-        cv2.line(img, tuple(ed1.astype(np.int).tolist()), tuple(ed3.astype(np.int).tolist()), color, size)
-        cv2.line(img, tuple(ed3.astype(np.int).tolist()), tuple(ed4.astype(np.int).tolist()), color, size)
-        cv2.line(img, tuple(ed2.astype(np.int).tolist()), tuple(ed4.astype(np.int).tolist()), color, size)
+        cv2.line(img, tuple(ed1.astype(int).tolist()), tuple(ed2.astype(int).tolist()), color, size)
+        cv2.line(img, tuple(ed1.astype(int).tolist()), tuple(ed3.astype(int).tolist()), color, size)
+        cv2.line(img, tuple(ed3.astype(int).tolist()), tuple(ed4.astype(int).tolist()), color, size)
+        cv2.line(img, tuple(ed2.astype(int).tolist()), tuple(ed4.astype(int).tolist()), color, size)
         #朝向箭头的绘制
         arrow1 = change_direction_vis(6, 0, -self.theta) + np.array((self.x, self.y))
         arrow2 = change_direction_vis(0, 4, -self.theta) + np.array((self.x, self.y))
@@ -106,7 +106,7 @@ class RoboticAssistant:
         w2 = change_direction_vis(0, -self.d, -self.theta) + np.array((self.x, self.y))
         img = view_unit(img, int(w1[0]), int(w1[1]), self.wu, self.wv, -self.theta)
         img = view_unit(img, int(w2[0]), int(w2[1]), self.wu, self.wv, -self.theta)
-        img = cv2.line(img, tuple(w1.astype(np.int).tolist()), tuple(w2.astype(np.int).tolist()), (0, 0, 0), 1)
+        img = cv2.line(img, tuple(w1.astype(int).tolist()), tuple(w2.astype(int).tolist()), (0, 0, 0), 1)
         return img
 
 
@@ -122,8 +122,8 @@ def view_unit(rendered_unit, x, y, u, v, angle, color=(0, 0, 0), size=1):
     edge2 = change_direction_vis(u / 2, -v / 2, angle) + np.array((x, y))
     edge3 = change_direction_vis(-u / 2, v / 2, angle) + np.array((x, y))
     edge4 = change_direction_vis(u / 2, v / 2, angle) + np.array((x, y))
-    cv2.line(rendered_unit, tuple(edge1.astype(np.int).tolist()), tuple(edge2.astype(np.int).tolist()), color, size)
-    cv2.line(rendered_unit, tuple(edge1.astype(np.int).tolist()), tuple(edge3.astype(np.int).tolist()), color, size)
-    cv2.line(rendered_unit, tuple(edge3.astype(np.int).tolist()), tuple(edge4.astype(np.int).tolist()), color, size)
-    cv2.line(rendered_unit, tuple(edge2.astype(np.int).tolist()), tuple(edge4.astype(np.int).tolist()), color, size)
+    cv2.line(rendered_unit, tuple(edge1.astype(int).tolist()), tuple(edge2.astype(int).tolist()), color, size)
+    cv2.line(rendered_unit, tuple(edge1.astype(int).tolist()), tuple(edge3.astype(int).tolist()), color, size)
+    cv2.line(rendered_unit, tuple(edge3.astype(int).tolist()), tuple(edge4.astype(int).tolist()), color, size)
+    cv2.line(rendered_unit, tuple(edge2.astype(int).tolist()), tuple(edge4.astype(int).tolist()), color, size)
     return rendered_unit
